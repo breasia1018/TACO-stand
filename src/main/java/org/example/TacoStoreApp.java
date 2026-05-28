@@ -166,25 +166,17 @@ public class TacoStoreApp {
 
         System.out.println("\n===== CHECKOUT =====");
 
-        //  order.calculateTotal();
-        //   order.displayOrder();
+         order.calculateTotal();
+         order.displayOrder();
 
-        // if (order.getTacos().isEmpty()
-        //      && order.getDrinks().isEmpty()
-        //      && order.getChips().isEmpty()) {
+        if (order.getTacos().isEmpty()
+                && order.getDrinks().isEmpty()
+                && order.getChips().isEmpty()) {
 
-        System.out.println("You must order at least a drink or chips & salsa!");
-        return;
+            System.out.println("You must order at least a drink or chips & salsa!");
+
+        }
+
+
     }
-
-    //   System.out.println("\nConfirm order? (yes/no): ");
-
-    String confirm = scanner.nextLine();
 }
-
-     //   if (confirm.equalsIgnoreCase("yes")) {
-
-        //    ReceiptFileManager.saveReceipt(order);
-        //    System.out.println("Order completed! Receipt saved.");
-     //   } else {
-      //      System.out.println("Order canceled.");
