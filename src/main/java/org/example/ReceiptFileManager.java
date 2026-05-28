@@ -3,82 +3,76 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ReceiptFileManager {
 
-    // Save receipt to file
     public static void saveReceipt(Orders finalOrder) {
 
-        // Create receipts folder
         File folder = new File("receipts");
 
         if (!folder.exists()) {
             folder.mkdir();
         }
 
-        // Create file name
-        String fileName = "receipts/Receipt_" +
-                System.currentTimeMillis() + ".txt";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+        String fileName = "receipts/" + LocalDateTime.now().format(formatter) + ".txt";
 
         try {
 
-            BufferedWriter writer =
-                    new BufferedWriter(new FileWriter(fileName));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
 
             writer.write("===== TACO-LICIOUS RECEIPT =====\n\n");
 
-            // TACOS
             writer.write("TACOS:\n");
+            if (finalOrder.getTacos().isEmpty()) {
+                writer.write("None\n");
+            } else {
+                for (Taco taco : finalOrder.getTacos()) {
+                    writer.write("- " + taco.getSize() + " (" + taco.getTortillaType() + ") - $"
+                            + String.format("%.2f", taco.getPrice()) + "\n");
 
-            for (Taco taco : finalOrder.getTacos()) {
+                    writer.write("  Toppings:\n");
+                    if (taco.getToppings().isEmpty()) {
+                        writer.write("   * None\n");
+                    } else {
+                        for (Topping topping : taco.getToppings()) {
+                            writer.write("   * " + topping + "\n");
+                        }
+                    }
 
-                writer.write("- " + taco.getSize()
-                        + " (" + taco.getTortillaType() + ")\n");
-
-                for (Topping topping : taco.getToppings()) {
-                    writer.write("   * " + topping.getName() + "\n");
+                    writer.write("   * Covered in salsa: " + taco.isHasSalsa() + "\n");
+                    writer.write("   * Covered in queso: " + taco.isHasQueso() + "\n");
                 }
             }
 
-            // DRINKS
             writer.write("\nDRINKS:\n");
-
-            for (Drinks drink : finalOrder.getDrinks()) {
-
-                writer.write("- " + drink.getSize()
-                        + " "
-                        + drink.getFlavor()
-                        + " ($"
-                        + drink.getPrice()
-                        + ")\n");
+            if (finalOrder.getDrinks().isEmpty()) {
+                writer.write("None\n");
+            } else {
+                for (Drinks drink : finalOrder.getDrinks()) {
+                    writer.write("- " + drink + "\n");
+                }
             }
 
-            // CHIPS
             writer.write("\nCHIPS & SALSA:\n");
-
-            for (ChipsAndSalsa chips : finalOrder.getChips()) {
-
-                writer.write("- "
-                        + chips.getSalsaType()
-                        + " ($"
-                        + chips.getPrice()
-                        + ")\n");
+            if (finalOrder.getChips().isEmpty()) {
+                writer.write("None\n");
+            } else {
+                for (ChipsAndSalsa chips : finalOrder.getChips()) {
+                    writer.write("- " + chips + "\n");
+                }
             }
 
-            // TOTAL
-            writer.write("\nTOTAL: $"
-                    + String.format("%.2f",
-                    finalOrder.getTotalPrice()));
+            writer.write("\nTOTAL: $" + String.format("%.2f", finalOrder.getTotalPrice()));
 
             writer.close();
 
-            System.out.println("Receipt saved successfully!");
+            System.out.println("Receipt saved successfully: " + fileName);
 
         } catch (IOException e) {
-
             System.out.println("Error saving receipt.");
         }
     }
 }
-
-

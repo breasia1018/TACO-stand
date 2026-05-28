@@ -1,27 +1,27 @@
 package org.example;
 public class Topping {
-    // Fields
+
     private String name;
-    private boolean premium;
+    private String category;
     private boolean extra;
+    private String tacoSize;
     private double price;
 
-    // Constructor
-    public Topping(String name, boolean premium, boolean extra) {
+    public Topping(String name, String category, boolean extra, String tacoSize) {
 
         this.name = name;
-        this.premium = premium;
+        this.category = category;
         this.extra = extra;
+        this.tacoSize = tacoSize;
         this.price = calculatePrice();
     }
 
-    // Getters
     public String getName() {
         return name;
     }
 
-    public boolean isPremium() {
-        return premium;
+    public String getCategory() {
+        return category;
     }
 
     public boolean isExtra() {
@@ -32,51 +32,74 @@ public class Topping {
         return price;
     }
 
-    // Setters
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPremium(boolean premium) {
-        this.premium = premium;
-        this.price = calculatePrice();
-    }
-
-    public void setExtra(boolean extra) {
-        this.extra = extra;
-        this.price = calculatePrice();
-    }
-
-    // Calculate topping price
     public double calculatePrice() {
 
         double toppingPrice = 0.0;
 
-        // Premium toppings cost extra
-        if (premium) {
-            toppingPrice += 1.00;
-        }
+        if (category.equalsIgnoreCase("meat")) {
 
-        // Extra toppings cost more
-        if (extra) {
+            switch (tacoSize.toLowerCase()) {
 
-            if (premium) {
-                toppingPrice += 1.50;
-            } else {
-                toppingPrice += 0.50;
+                case "single taco":
+                    toppingPrice = 1.00;
+                    if (extra) {
+                        toppingPrice += 0.50;
+                    }
+                    break;
+
+                case "3-taco plate":
+                    toppingPrice = 2.00;
+                    if (extra) {
+                        toppingPrice += 1.00;
+                    }
+                    break;
+
+                case "burrito":
+                    toppingPrice = 3.00;
+                    if (extra) {
+                        toppingPrice += 1.50;
+                    }
+                    break;
+            }
+        } else if (category.equalsIgnoreCase("cheese")) {
+
+            switch (tacoSize.toLowerCase()) {
+
+                case "single taco":
+                    toppingPrice = 0.75;
+                    if (extra) {
+                        toppingPrice += 0.30;
+                    }
+                    break;
+
+                case "3-taco plate":
+                    toppingPrice = 1.50;
+                    if (extra) {
+                        toppingPrice += 0.60;
+                    }
+                    break;
+
+                case "burrito":
+                    toppingPrice = 2.25;
+                    if (extra) {
+                        toppingPrice += 0.90;
+                    }
+                    break;
             }
         }
 
         return toppingPrice;
     }
 
-    // Display topping info
-    public void displayTopping() {
+    @Override
+    public String toString() {
 
-        System.out.println(name +
-                " | Premium: " + premium +
-                " | Extra: " + extra +
-                " | Price: $" + price);
+        String extraText = "";
+
+        if (extra) {
+            extraText = " extra";
+        }
+
+        return name + " (" + category + extraText + ") - $" + String.format("%.2f", price);
     }
 }
-

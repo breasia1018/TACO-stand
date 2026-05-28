@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Taco {
 
-    // Fields
     private String size;
     private String tortillaType;
     private List<Topping> toppings;
@@ -12,8 +11,8 @@ public class Taco {
     private boolean hasSalsa;
     private double price;
 
-    // Constructor
     public Taco(String size, String tortillaType) {
+
         this.size = size;
         this.tortillaType = tortillaType;
         this.toppings = new ArrayList<>();
@@ -22,7 +21,6 @@ public class Taco {
         this.price = calculatePrice();
     }
 
-    // Getters
     public String getSize() {
         return size;
     }
@@ -47,36 +45,23 @@ public class Taco {
         return hasSalsa;
     }
 
-    // Setters
-    public void setSize(String size) {
-        this.size = size;
-        this.price = calculatePrice();
-    }
-
-    public void setTortillaType(String tortillaType) {
-        this.tortillaType = tortillaType;
-    }
-
     public void setHasQueso(boolean hasQueso) {
         this.hasQueso = hasQueso;
-        this.price = calculatePrice();
     }
 
     public void setHasSalsa(boolean hasSalsa) {
         this.hasSalsa = hasSalsa;
-        this.price = calculatePrice();
     }
 
-    // Add topping
     public void addTopping(Topping topping) {
+
         toppings.add(topping);
-        this.price = calculatePrice();
+        price = calculatePrice();
     }
 
-    // Calculate price
     public double calculatePrice() {
 
-        double basePrice = 0.0;
+        double basePrice;
 
         switch (size.toLowerCase()) {
 
@@ -96,35 +81,36 @@ public class Taco {
                 basePrice = 0.0;
         }
 
-        for (Topping t : toppings) {
-            basePrice += t.getPrice();
-        }
-
-        if (hasQueso) {
-            basePrice += 0.75;
-        }
-
-        if (hasSalsa) {
-            basePrice += 0.50;
+        for (Topping topping : toppings) {
+            basePrice += topping.getPrice();
         }
 
         return basePrice;
     }
 
-    // Display taco
     public void displayTaco() {
 
-        System.out.println("\n--- Taco ---");
+        System.out.println("\n--- Taco/Burrito ---");
         System.out.println("Size: " + size);
-        System.out.println("Tortilla: " + tortillaType);
+        System.out.println("Shell: " + tortillaType);
 
         System.out.println("Toppings:");
-        for (Topping t : toppings) {
-            System.out.println("- " + t.getName());
+
+        if (toppings.isEmpty()) {
+            System.out.println("None");
+        } else {
+            for (Topping topping : toppings) {
+                System.out.println("- " + topping);
+            }
         }
 
-        System.out.println("Queso: " + hasQueso);
-        System.out.println("Salsa: " + hasSalsa);
-        System.out.println("Price: $" + price);
+        System.out.println("Covered in salsa: " + hasSalsa);
+        System.out.println("Covered in queso: " + hasQueso);
+        System.out.println("Price: $" + String.format("%.2f", price));
+    }
+
+    @Override
+    public String toString() {
+        return size + " (" + tortillaType + ") - $" + String.format("%.2f", price);
     }
 }

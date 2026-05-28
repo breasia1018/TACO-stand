@@ -6,16 +6,15 @@ public class TacoStoreApp {
     private Scanner scanner = new Scanner(System.in);
     private Orders order;
 
-    // START APP
     public void start() {
-
-        System.out.println("================================");
-        System.out.println("     WELCOME TO TACO-LICIOUS    ");
-        System.out.println("================================");
 
         boolean running = true;
 
         while (running) {
+
+            System.out.println("================================");
+            System.out.println("     WELCOME TO TACO-LICIOUS    ");
+            System.out.println("================================");
 
             System.out.println("\nMAIN MENU");
             System.out.println("1. New Order");
@@ -41,10 +40,9 @@ public class TacoStoreApp {
         }
     }
 
-    // CREATE ORDER
     public void createOrder() {
 
-        // order = new Orders();
+        order = new Orders();
 
         boolean ordering = true;
 
@@ -75,11 +73,11 @@ public class TacoStoreApp {
                     break;
 
                 case "4":
-                    checkout();
-                    ordering = false;
+                    ordering = checkout();
                     break;
 
                 case "0":
+                    order = null;
                     System.out.println("Order canceled.");
                     ordering = false;
                     break;
@@ -90,49 +88,54 @@ public class TacoStoreApp {
         }
     }
 
-    // ADD TACO
     public void addTaco() {
 
-        System.out.println("\nEnter size (Single Taco, 3-Taco Plate, Burrito): ");
-        String size = scanner.nextLine();
-
-        System.out.println("Enter tortilla type (corn, flour, hard shell, bowl): ");
+        System.out.println("\nSelect shell (corn, flour, hard shell, bowl): ");
         String tortilla = scanner.nextLine();
+
+        System.out.println("Taco size (Single Taco, 3-Taco Plate, Burrito): ");
+        String size = scanner.nextLine();
 
         Taco taco = new Taco(size, tortilla);
 
-        boolean addingToppings = true;
+        addToppingSection(taco, "meat");
+        addToppingSection(taco, "cheese");
+        addToppingSection(taco, "regular");
+        addToppingSection(taco, "sauce");
+        addToppingSection(taco, "side");
 
-        while (addingToppings) {
+        System.out.println("Would you like it covered in salsa? (yes/no): ");
+        taco.setHasSalsa(scanner.nextLine().equalsIgnoreCase("yes"));
 
-            System.out.println("\nEnter topping name (or type 'done'):");
-            String name = scanner.nextLine();
+        System.out.println("Would you like it covered in queso? (yes/no): ");
+        taco.setHasQueso(scanner.nextLine().equalsIgnoreCase("yes"));
 
-            if (name.equalsIgnoreCase("done")) {
-                break;
-            }
-
-            System.out.println("Is it premium? (true/false): ");
-            boolean premium = Boolean.parseBoolean(scanner.nextLine());
-
-            System.out.println("Is it extra? (true/false): ");
-            boolean extra = Boolean.parseBoolean(scanner.nextLine());
-
-            taco.addTopping(new Topping(name, premium, extra));
-        }
-
-        System.out.println("Add queso? (true/false): ");
-        taco.setHasQueso(Boolean.parseBoolean(scanner.nextLine()));
-
-        System.out.println("Add salsa? (true/false): ");
-        taco.setHasSalsa(Boolean.parseBoolean(scanner.nextLine()));
-
-        // order.addTaco(taco);
+        order.addTaco(taco);
 
         System.out.println("Taco added!");
     }
 
-    // ADD DRINK
+    private void addToppingSection(Taco taco, String category) {
+
+        boolean adding = true;
+
+        while (adding) {
+
+            System.out.println("\nAdd " + category + " topping? Type name or 'done': ");
+            String name = scanner.nextLine();
+
+            if (name.equalsIgnoreCase("done")) {
+                adding = false;
+            } else {
+
+                System.out.println("Extra " + name + "? (yes/no): ");
+                boolean extra = scanner.nextLine().equalsIgnoreCase("yes");
+
+                taco.addTopping(new Topping(name, category, extra, taco.getSize()));
+            }
+        }
+    }
+
     public void addDrink() {
 
         System.out.println("\nEnter size (small, medium, large): ");
@@ -143,12 +146,11 @@ public class TacoStoreApp {
 
         Drinks drink = new Drinks(size, flavor);
 
-        //   order.addDrink(drink);
+        order.addDrink(drink);
 
         System.out.println("Drink added!");
     }
 
-    // ADD CHIPS
     public void addChips() {
 
         System.out.println("\nEnter salsa type (mild, medium, hot): ");
@@ -156,27 +158,46 @@ public class TacoStoreApp {
 
         ChipsAndSalsa chips = new ChipsAndSalsa(salsa);
 
-        //   order.addChips(chips);
+        order.addChips(chips);
 
         System.out.println("Chips added!");
     }
 
-    // CHECKOUT
-    public void checkout() {
-
-        System.out.println("\n===== CHECKOUT =====");
-
-         order.calculateTotal();
-         order.displayOrder();
+    public boolean checkout() {
 
         if (order.getTacos().isEmpty()
                 && order.getDrinks().isEmpty()
                 && order.getChips().isEmpty()) {
 
-            System.out.println("You must order at least a drink or chips & salsa!");
-
+            System.out.println("You must order at least one taco, drink, or chips & salsa.");
+            return true;
         }
 
+        order.calculateTotal();
+        order.displayOrder();
 
+        System.out.println("\n1. Confirm");
+        System.out.println("0. Cancel");
+        System.out.print("Choose: ");
+
+        String choice = scanner.nextLine();
+
+        switch (choice) {
+
+            case "1":
+                ReceiptFileManager.saveReceipt(order);
+                order = null;
+                System.out.println("Order completed!");
+                return false;
+
+            case "0":
+                order = null;
+                System.out.println("Order canceled.");
+                return false;
+
+            default:
+                System.out.println("Invalid option. Returning to order menu.");
+                return true;
+        }
     }
 }
