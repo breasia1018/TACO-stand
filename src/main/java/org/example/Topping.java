@@ -1,3 +1,4 @@
+package org.example;
 public class Topping {
     // Fields
     private String name;
