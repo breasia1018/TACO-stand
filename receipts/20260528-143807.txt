@@ -1,0 +1,20 @@
+===== TACO-LICIOUS RECEIPT =====
+
+TACOS:
+- single taco (corn) - $7.25
+  Toppings:
+   * beef (meat extra) - $1.50
+   * chicken (meat extra) - $1.50
+   * american (cheese) - $0.75
+   * lettuce (regular) - $0.00
+   * sour cream (regular) - $0.00
+   * Covered in salsa: true
+   * Covered in queso: true
+
+DRINKS:
+- small coke Drink - $2.00
+
+CHIPS & SALSA:
+- Chips & Salsa (hot) - $1.50
+
+TOTAL: $10.75
